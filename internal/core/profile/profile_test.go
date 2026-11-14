@@ -2,6 +2,7 @@ package profile_test
 
 import (
 	"testing"
+	"uuid"
 
 	"github.com/Mr-MichaelK/money-man/internal/core/profile"
 )
@@ -12,29 +13,38 @@ func TestNew(t *testing.T) {
 		password = "supersecretpassword"
 	)
 
-	t.Run("should create a blank profile if no options are passed", func(t *testing.T) {
+	t.Run("should create a blank profile with an id if no options are passed", func(t *testing.T) {
 		want := profile.Profile{}
-		got := *profile.New()
 
-		if want != got {
+		got := profile.New()
+
+		if _, err := uuid.Parse(got.Id()); err != nil {
+			t.Errorf("expected ID to be a valid UUID, got %v", got.Id())
+		}
+
+		if !isEqual(want, *got) {
 			t.Errorf("wanted %v but got %v", want, got)
 		}
 	})
 
 	t.Run("should take a username option and initialize the profile with it", func(t *testing.T) {
-		want := username
+		want := profile.Profile{}
+		want.SetUsername(username)
+
 		got := profile.New(profile.WithUsername(username))
 
-		if want != got.Username() {
+		if !isEqual(want, *got) {
 			t.Errorf("wanted %v but got %v", want, got)
 		}
 	})
 
 	t.Run("should take a password option and initialize the profile with it", func(t *testing.T) {
-		want := password
+		want := profile.Profile{}
+		want.SetPassword(password)
+
 		got := profile.New(profile.WithPassword(password))
 
-		if want != got.Password() {
+		if !isEqual(want, *got) {
 			t.Errorf("wanted %v but got %v", want, got)
 		}
 	})
@@ -44,13 +54,18 @@ func TestNew(t *testing.T) {
 		want.SetUsername(username)
 		want.SetPassword(password)
 
-		got := *profile.New(
+		got := profile.New(
 			profile.WithUsername(username),
 			profile.WithPassword(password),
 		)
 
-		if want != got {
+		if !isEqual(want, *got) {
 			t.Errorf("wanted %v but got %v", want, got)
 		}
 	})
+}
+
+func isEqual(p1, p2 profile.Profile) bool {
+	return p1.Username() == p2.Username() &&
+		p1.Password() == p2.Password()
 }

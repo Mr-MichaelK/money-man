@@ -1,7 +1,10 @@
 package profile
 
+import "uuid"
+
 // Profile defines a single user profile with a username and password.
 type Profile struct {
+	id       string
 	username string
 	password string
 }
@@ -25,13 +28,17 @@ func WithPassword(password string) Option {
 
 // New takes options for creating a Profile and returns a pointer to a Profile.
 func New(options ...Option) *Profile {
-	profile := &Profile{}
+	profile := &Profile{id: uuid.New().String()}
 
 	for _, option := range options {
 		option(profile)
 	}
 
 	return profile
+}
+
+func (p *Profile) Id() string {
+	return p.id
 }
 
 // Username is a Profile.username getter.
