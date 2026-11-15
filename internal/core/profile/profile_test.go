@@ -22,7 +22,7 @@ func TestNew(t *testing.T) {
 			t.Errorf("expected ID to be a valid UUID, got %v", got.Id())
 		}
 
-		if !isEqual(want, *got) {
+		if !isEqualProfile(want, *got) {
 			t.Errorf("wanted %v but got %v", want, got)
 		}
 	})
@@ -33,7 +33,7 @@ func TestNew(t *testing.T) {
 
 		got := profile.New(profile.WithUsername(username))
 
-		if !isEqual(want, *got) {
+		if !isEqualProfile(want, *got) {
 			t.Errorf("wanted %v but got %v", want, got)
 		}
 	})
@@ -44,7 +44,7 @@ func TestNew(t *testing.T) {
 
 		got := profile.New(profile.WithPassword(password))
 
-		if !isEqual(want, *got) {
+		if !isEqualProfile(want, *got) {
 			t.Errorf("wanted %v but got %v", want, got)
 		}
 	})
@@ -59,13 +59,13 @@ func TestNew(t *testing.T) {
 			profile.WithPassword(password),
 		)
 
-		if !isEqual(want, *got) {
+		if !isEqualProfile(want, *got) {
 			t.Errorf("wanted %v but got %v", want, got)
 		}
 	})
 }
 
-func isEqual(p1, p2 profile.Profile) bool {
+func isEqualProfile(p1, p2 profile.Profile) bool {
 	return p1.Username() == p2.Username() &&
 		p1.Password() == p2.Password()
 }

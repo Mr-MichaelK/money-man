@@ -37,6 +37,7 @@ func New(options ...Option) *Profile {
 	return profile
 }
 
+// Id is a Profile.id getter.
 func (p *Profile) Id() string {
 	return p.id
 }
