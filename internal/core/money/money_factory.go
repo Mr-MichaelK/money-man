@@ -12,15 +12,20 @@ var (
 	ErrInvalidCurrencyCode = errors.New("invalid currency code")
 )
 
+// CurrencyFetcher takes a CurrencyCode and returns its corresponding currency.
+type CurrencyFetcher interface {
+	Fetch(currencyCode currency.CurrencyCode) (currency.Currency, error)
+}
+
 // MoneyFactory is the standard way to create Money with a certain currency. Prefer using it over
 // the money.New constructor to avoid having to create a new currency and to validate the one being
 // used is valid and exists.
 type MoneyFactory struct {
-	currencyFetcher currency.CurrencyFetcher
+	currencyFetcher CurrencyFetcher
 }
 
 // NewMoneyFactory takes a CurrencyFetcher and returns a new money factory.
-func NewMoneyFactory(currencyFetcher currency.CurrencyFetcher) (*MoneyFactory, error) {
+func NewMoneyFactory(currencyFetcher CurrencyFetcher) (*MoneyFactory, error) {
 	if currencyFetcher == nil {
 		return &MoneyFactory{}, ErrNilCurrencyFetcher
 	}
