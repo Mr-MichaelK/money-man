@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/Mr-MichaelK/money-man/internal/core/currency"
 )
 
 var ErrCurrencyMismatch = errors.New("Currency mismatch: cannot operate on two amounts of money with different currencies")
@@ -12,11 +14,11 @@ var ErrCurrencyMismatch = errors.New("Currency mismatch: cannot operate on two a
 // Money represents a certain amount of money with a currency.
 type Money struct {
 	amount   Amount
-	currency Currency
+	currency currency.Currency
 }
 
 // New takes an amount and currency and returns Money.
-func New(amount Amount, currency Currency) Money {
+func New(amount Amount, currency currency.Currency) Money {
 	return Money{
 		amount:   amount,
 		currency: currency,
@@ -29,7 +31,7 @@ func (m Money) Amount() Amount {
 }
 
 // Currency is a m.currency getter.
-func (m Money) Currency() Currency {
+func (m Money) Currency() currency.Currency {
 	return m.currency
 }
 
@@ -37,7 +39,7 @@ func (m Money) Currency() Currency {
 func (m Money) String() string {
 	raw := strconv.FormatInt(int64(m.amount), 10)
 
-	places := int(m.currency.decimalPlaces)
+	places := int(m.currency.DecimalPlaces())
 
 	if places == 0 {
 		return fmt.Sprintf("%s %s", raw, m.currency.Code())

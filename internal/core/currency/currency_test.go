@@ -1,9 +1,9 @@
-package money_test
+package currency_test
 
 import (
 	"testing"
 
-	"github.com/Mr-MichaelK/money-man/internal/core/money"
+	"github.com/Mr-MichaelK/money-man/internal/core/currency"
 )
 
 func TestNewCurrency(t *testing.T) {
@@ -19,7 +19,7 @@ func TestNewCurrency(t *testing.T) {
 	)
 
 	t.Run("should reject creating a currency with an empty code", func(t *testing.T) {
-		_, err := money.NewCurrency(emptyStr, validCurrencyName, decimalPlaces)
+		_, err := currency.NewCurrency(emptyStr, validCurrencyName, decimalPlaces)
 
 		if err == nil {
 			t.Fatalf("expected an error to be returned for currency code \"%s\" but no error was returned", emptyStr)
@@ -27,7 +27,7 @@ func TestNewCurrency(t *testing.T) {
 	})
 
 	t.Run("should reject creating a currency with code length less than 3 with spaces", func(t *testing.T) {
-		_, err := money.NewCurrency(invalidCodeWithSpaces, validCurrencyName, decimalPlaces)
+		_, err := currency.NewCurrency(invalidCodeWithSpaces, validCurrencyName, decimalPlaces)
 
 		if err == nil {
 			t.Fatalf("expected an error to be returned for currency code \"%s\" but no error was returned", invalidCodeWithSpaces)
@@ -35,7 +35,7 @@ func TestNewCurrency(t *testing.T) {
 	})
 
 	t.Run("should reject creating a currency with a non-iso code", func(t *testing.T) {
-		_, err := money.NewCurrency(invalidCode, validCurrencyName, decimalPlaces)
+		_, err := currency.NewCurrency(invalidCode, validCurrencyName, decimalPlaces)
 
 		if err == nil {
 			t.Fatalf("expected an error to be returned for currency code \"%s\" but no error was returned", invalidCode)
@@ -43,7 +43,7 @@ func TestNewCurrency(t *testing.T) {
 	})
 
 	t.Run("should reject creating a currency with an empty name", func(t *testing.T) {
-		_, err := money.NewCurrency(validCode, emptyStr, decimalPlaces)
+		_, err := currency.NewCurrency(validCode, emptyStr, decimalPlaces)
 
 		if err == nil {
 			t.Fatalf("expected an error to be returned for currency name \"%s\" but no error was returned", emptyStr)
@@ -51,7 +51,7 @@ func TestNewCurrency(t *testing.T) {
 	})
 
 	t.Run("should reject creating a currency with blank name", func(t *testing.T) {
-		_, err := money.NewCurrency(validCode, "  ", decimalPlaces)
+		_, err := currency.NewCurrency(validCode, "  ", decimalPlaces)
 
 		if err == nil {
 			t.Fatalf("expected an error to be returned for currency name \"%s\" but no error was returned", "  ")
@@ -59,13 +59,13 @@ func TestNewCurrency(t *testing.T) {
 	})
 
 	t.Run("given the code and currency are valid but contain spaces, the system should trim the spaces and create the currency", func(t *testing.T) {
-		c, err := money.NewCurrency(validCodeWithSpaces, validCurrencyNameWithSpaces, decimalPlaces)
+		c, err := currency.NewCurrency(validCodeWithSpaces, validCurrencyNameWithSpaces, decimalPlaces)
 
 		if err != nil {
 			t.Fatalf("unexpected error was returned with currency code \"%s\" and currency name \"%s\"", validCodeWithSpaces, validCurrencyNameWithSpaces)
 		}
 
-		expectedCode := money.CurrencyCode(validCode)
+		expectedCode := currency.CurrencyCode(validCode)
 		if c.Code() != expectedCode {
 			t.Fatalf("expected currency code to be \"%s\" but got \"%s\"", expectedCode, c.Code())
 		}
@@ -77,13 +77,13 @@ func TestNewCurrency(t *testing.T) {
 	})
 
 	t.Run("given the code and currency are valid then the system should create a currency using them", func(t *testing.T) {
-		c, err := money.NewCurrency(validCode, validCurrencyName, decimalPlaces)
+		c, err := currency.NewCurrency(validCode, validCurrencyName, decimalPlaces)
 
 		if err != nil {
 			t.Fatalf("unexpected error was returned with currency code \"%s\" and currency name \"%s\"", validCode, validCurrencyName)
 		}
 
-		expectedCode := money.CurrencyCode(validCode)
+		expectedCode := currency.CurrencyCode(validCode)
 		if c.Code() != expectedCode {
 			t.Fatalf("expected currency code to be \"%s\" but got \"%s\"", expectedCode, c.Code())
 		}
@@ -102,7 +102,7 @@ func TestCurrencyString(t *testing.T) {
 	)
 
 	t.Run("should return a string formatted to have the code first followed by the name", func(t *testing.T) {
-		c, err := money.NewCurrency(code, name, 2)
+		c, err := currency.NewCurrency(code, name, 2)
 		if err != nil {
 			t.Fatalf("unexpected error was returned with currency code \"%s\" and currency name \"%s\"", code, name)
 		}

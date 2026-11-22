@@ -3,13 +3,14 @@ package money_test
 import (
 	"testing"
 
+	"github.com/Mr-MichaelK/money-man/internal/core/currency"
 	"github.com/Mr-MichaelK/money-man/internal/core/money"
 )
 
 func TestMoneyString(t *testing.T) {
 	t.Run("should return the amount of money with its decimal places and the currency code beside it", func(t *testing.T) {
 		amount := money.Amount(10000)
-		currency, err := money.NewCurrency("USD", "dollar", 2)
+		currency, err := currency.NewCurrency("USD", "dollar", 2)
 		if err != nil {
 			t.Fatal("unexpected error occured when creating currency")
 		}
@@ -25,7 +26,7 @@ func TestMoneyString(t *testing.T) {
 
 	t.Run("should format negative amounts smaller than one unit with leading zero", func(t *testing.T) {
 		amount := money.Amount(-5)
-		currency, err := money.NewCurrency("USD", "US Dollar", 2)
+		currency, err := currency.NewCurrency("USD", "US Dollar", 2)
 		if err != nil {
 			t.Fatalf("unexpected error occurred when creating currency: %v", err)
 		}
@@ -52,8 +53,8 @@ func TestMoneyAdd(t *testing.T) {
 		currencyNameTwo = "b"
 	)
 
-	getCurrencyOne := func() money.Currency {
-		c, err := money.NewCurrency(currencyCodeOne, currencyNameOne, 0)
+	getCurrencyOne := func() currency.Currency {
+		c, err := currency.NewCurrency(currencyCodeOne, currencyNameOne, 0)
 		if err != nil {
 			t.Fatal("unexpected error occured when creating currency")
 		}
@@ -61,8 +62,8 @@ func TestMoneyAdd(t *testing.T) {
 		return c
 	}
 
-	getCurrencyTwo := func() money.Currency {
-		c, err := money.NewCurrency(currencyCodeTwo, currencyNameTwo, 0)
+	getCurrencyTwo := func() currency.Currency {
+		c, err := currency.NewCurrency(currencyCodeTwo, currencyNameTwo, 0)
 		if err != nil {
 			t.Fatal("unexpected error occured when creating currency")
 		}
@@ -118,8 +119,8 @@ func TestMoneySubtract(t *testing.T) {
 		currencyNameTwo = "b"
 	)
 
-	getCurrencyOne := func() money.Currency {
-		c, err := money.NewCurrency(currencyCodeOne, currencyNameOne, 0)
+	getCurrencyOne := func() currency.Currency {
+		c, err := currency.NewCurrency(currencyCodeOne, currencyNameOne, 0)
 		if err != nil {
 			t.Fatal("unexpected error occured when creating currency")
 		}
@@ -127,8 +128,8 @@ func TestMoneySubtract(t *testing.T) {
 		return c
 	}
 
-	getCurrencyTwo := func() money.Currency {
-		c, err := money.NewCurrency(currencyCodeTwo, currencyNameTwo, 0)
+	getCurrencyTwo := func() currency.Currency {
+		c, err := currency.NewCurrency(currencyCodeTwo, currencyNameTwo, 0)
 		if err != nil {
 			t.Fatal("unexpected error occured when creating currency")
 		}
