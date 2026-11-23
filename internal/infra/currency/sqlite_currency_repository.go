@@ -6,6 +6,8 @@ import (
 	"fmt"
 
 	"github.com/Mr-MichaelK/money-man/internal/core/currency"
+
+	// Register the pure-Go SQLite driver with database/sql.
 	_ "modernc.org/sqlite"
 )
 
