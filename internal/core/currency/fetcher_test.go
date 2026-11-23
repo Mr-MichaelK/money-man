@@ -40,10 +40,25 @@ func TestNewFetchCurrencyService(t *testing.T) {
 
 func TestFetchCurrencyServiceFetch(t *testing.T) {
 	const (
-		currencyCode  = "USD"
-		currencyName  = "dollar"
-		decimalPlaces = 2
+		invalidCurrencyCode = "2j9rp"
+		currencyCode        = "USD"
+		currencyName        = "dollar"
+		decimalPlaces       = 2
 	)
+
+	t.Run("given an invalid currency code then the system should reject the request", func(t *testing.T) {
+		repo := &MockFetchCurrencyRepository{}
+		s, err := currency.NewFetchCurrencyService(repo)
+		if err != nil {
+			t.Fatal("unexpected error was returned when creating FetchCurrencyService")
+		}
+
+		_, err = s.Fetch(currency.CurrencyCode(invalidCurrencyCode))
+
+		if err == nil {
+			t.Fatal("expected an error to be returned but none were returned")
+		}
+	})
 
 	t.Run("given the FetchCurrencyRepository returned an error then the system should propagate that error", func(t *testing.T) {
 		repo := &MockFetchCurrencyRepository{FetchReturnsError: errors.New("error")}
