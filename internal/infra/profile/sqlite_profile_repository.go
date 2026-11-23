@@ -2,18 +2,21 @@ package profile
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/Mr-MichaelK/money-man/internal/core/profile"
+
+	// Register the pure-Go SQLite driver with database/sql.
 	_ "modernc.org/sqlite"
 )
 
-const (
-	ErrFailedToOpenSQLite               = "Failed to open sqlite db: %w"
-	ErrFailedToPingSQLite               = "Failed to ping sqlite db: %w"
-	ErrFailedToCreateTable              = "Failed to create profiles table: %w"
-	ErrFailedToSaveProfile              = "Failed to save profile: %w"
-	ErrFailedToCheckExistenceByUsername = "Failed to check username existence: %w"
+var (
+	ErrFailedToOpenSQLite               = errors.New("failed to open sqlite db")
+	ErrFailedToPingSQLite               = errors.New("failed to ping sqlite db")
+	ErrFailedToCreateTable              = errors.New("failed to create profiles table")
+	ErrFailedToSaveProfile              = errors.New("failed to save profile")
+	ErrFailedToCheckExistenceByUsername = errors.New("failed to check username existence")
 )
 
 const (
@@ -27,21 +30,21 @@ const (
 	existsByUsernameQuery = `SELECT COUNT(1) FROM profiles WHERE username = ?`
 )
 
-// SQLiteProfileRepository defines the methods needed to fetch and persist profiles in SQLite.
+// SQLiteProfileRepository defines the methods to interact with the profiles table in SQLite.
 type SQLiteProfileRepository struct {
 	db *sql.DB
 }
 
-// DB is a getter which returns SQLiteRepository.db.
+// DB is a getter which returns SQLiteProfileRepository.db field.
 func (r *SQLiteProfileRepository) DB() *sql.DB {
 	return r.db
 }
 
-// NewSQLiteProfileRepository initializes the repository and ensures the table exists.
+// NewSQLiteProfileRepository initializes the repository and ensures the profiles table exists.
 func NewSQLiteProfileRepository(dbPath string) (*SQLiteProfileRepository, error) {
 	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
-		return nil, fmt.Errorf(ErrFailedToOpenSQLite, err)
+		return nil, fmt.Errorf("%w: %w", ErrFailedToOpenSQLite, err)
 	}
 
 	success := false
@@ -52,12 +55,12 @@ func NewSQLiteProfileRepository(dbPath string) (*SQLiteProfileRepository, error)
 	}()
 
 	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf(ErrFailedToPingSQLite, err)
+		return nil, fmt.Errorf("%w: %w", ErrFailedToPingSQLite, err)
 	}
 
 	repo := &SQLiteProfileRepository{db: db}
 	if err := repo.createTable(); err != nil {
-		return nil, fmt.Errorf(ErrFailedToCreateTable, err)
+		return nil, fmt.Errorf("%w: %w", ErrFailedToCreateTable, err)
 	}
 
 	success = true
@@ -77,7 +80,7 @@ func (r *SQLiteProfileRepository) Save(p *profile.Profile) error {
 
 	_, err := r.db.Exec(query, p.Id(), p.Username(), p.Password())
 	if err != nil {
-		return fmt.Errorf(ErrFailedToSaveProfile, err)
+		return fmt.Errorf("%w: %w", ErrFailedToSaveProfile, err)
 	}
 	return nil
 }
@@ -89,7 +92,7 @@ func (r *SQLiteProfileRepository) ExistsByUsername(username string) (bool, error
 	var count int
 	err := r.db.QueryRow(query, username).Scan(&count)
 	if err != nil {
-		return false, fmt.Errorf(ErrFailedToCheckExistenceByUsername, err)
+		return false, fmt.Errorf("%w: %w", ErrFailedToCheckExistenceByUsername, err)
 	}
 
 	return count > 0, nil
